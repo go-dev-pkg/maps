@@ -7,22 +7,16 @@ import (
 	"github.com/go-dev-pkg/maps"
 )
 
-func TestMap(t *testing.T) {
-	m := maps.NewMap()
+func TestSlice(t *testing.T) {
+	s := maps.NewSlice()
 	wg := &sync.WaitGroup{}
 	// 并发写入
 	wg.Go(func() {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 1000; i++ {
 			_wg.Go(func() {
-				for j := 0; j < 100; j++ {
-					__wg := &sync.WaitGroup{}
-					for k := 0; k < 100; k++ {
-						__wg.Go(func() {
-							m.Store(i, map[interface{}]interface{}{k: j})
-						})
-					}
-					__wg.Wait()
+				for j := 0; j < 1000; j++ {
+					s.Store(i, j, j+1, j+2)
 				}
 			})
 		}
@@ -33,7 +27,7 @@ func TestMap(t *testing.T) {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 100; i++ {
 			_wg.Go(func() {
-				m.Load(i)
+				s.Load(i)
 			})
 		}
 		_wg.Wait()
@@ -43,7 +37,7 @@ func TestMap(t *testing.T) {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 100; i++ {
 			_wg.Go(func() {
-				m.Range(func(key interface{}, value map[interface{}]interface{}) bool {
+				s.Range(func(key interface{}, value []interface{}) bool {
 					return true
 				})
 			})
@@ -55,7 +49,7 @@ func TestMap(t *testing.T) {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 100; i++ {
 			_wg.Go(func() {
-				m.Len()
+				s.Len()
 			})
 		}
 		_wg.Wait()
@@ -65,7 +59,7 @@ func TestMap(t *testing.T) {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 100; i++ {
 			_wg.Go(func() {
-				m.Delete(i)
+				s.Delete(i)
 			})
 		}
 		_wg.Wait()
@@ -75,7 +69,7 @@ func TestMap(t *testing.T) {
 		_wg := &sync.WaitGroup{}
 		for i := 0; i < 100; i++ {
 			_wg.Go(func() {
-				m.Clear()
+				s.Clear()
 			})
 		}
 		_wg.Wait()

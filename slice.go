@@ -16,9 +16,6 @@ func NewSlice() *Slice {
 }
 
 func (s *Slice) Store(key interface{}, value ...interface{}) {
-	if len(value) == 0 {
-		return
-	}
 	s.Lock()
 	defer s.Unlock()
 	slice, ok := s.data[key]
@@ -29,6 +26,7 @@ func (s *Slice) Store(key interface{}, value ...interface{}) {
 	newSlice := make([]interface{}, len(slice)+len(value))
 	copy(newSlice, slice)
 	copy(newSlice[len(slice):], value)
+	delete(s.data, key)
 	s.data[key] = newSlice
 }
 
