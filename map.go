@@ -35,10 +35,16 @@ func (m *Map) Load(key interface{}) (value map[interface{}]interface{}, ok bool)
 	return
 }
 
-func (m *Map) Delete(key interface{}) {
+func (m *Map) Delete(key interface{}, vk ...interface{}) {
 	m.Lock()
 	defer m.Unlock()
-	delete(m.data, key)
+	if len(vk) == 0 {
+		delete(m.data, key)
+		return
+	}
+	for _, v := range vk {
+		delete(m.data[key], v)
+	}
 }
 
 func (m *Map) Range(f func(key interface{}, value map[interface{}]interface{}) bool) {
@@ -51,12 +57,23 @@ func (m *Map) Range(f func(key interface{}, value map[interface{}]interface{}) b
 	}
 }
 
-func (m *Map) Len() int {
-	return len(m.data)
+func (m *Map) Len(key ...interface{}) int {
+	if len(key) == 0 {
+		return len(m.data)
+	}
+	m.RLock()
+	defer m.RUnlock()
+	return len(m.data[key[0]])
 }
 
-func (m *Map) Clear() {
+func (m *Map) Clear(key ...interface{}) {
 	m.Lock()
 	defer m.Unlock()
-	clear(m.data)
+	if len(key) == 0 {
+		clear(m.data)
+		return
+	}
+	for _, vk := range key {
+		clear(m.data[vk])
+	}
 }

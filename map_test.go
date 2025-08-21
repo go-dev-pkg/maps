@@ -82,3 +82,29 @@ func TestMap(t *testing.T) {
 	})
 	wg.Wait()
 }
+
+func TestMapStore(t *testing.T) {
+	m := maps.NewMap()
+	m.Store(1, map[interface{}]interface{}{1: 1})
+	m.Store(1, map[interface{}]interface{}{
+		2: 2,
+		3: 3,
+	})
+	m.Store(1, map[interface{}]interface{}{4: 4})
+	m.Store(1, map[interface{}]interface{}{5: 5})
+	m.Store(1, map[interface{}]interface{}{6: 6})
+	m.Store(1, map[interface{}]interface{}{
+		7: 7,
+		8: 8,
+		9: 9,
+	})
+	v, ok := m.Load(1)
+	if !ok {
+		t.Fatal("should exist")
+		return
+	}
+	t.Log(v)
+	m.Delete(1, 4, 7)
+	t.Log(v)
+	m.Delete(3)
+}
