@@ -76,3 +76,30 @@ func TestSlice(t *testing.T) {
 	})
 	wg.Wait()
 }
+
+func TestSliceStore(t *testing.T) {
+	s := maps.NewSlice()
+	s.Store(1, 1)
+	s.Store(1, 2)
+	s.Store(1, 3, 4, 5)
+	s.Store(1, 6)
+	s.Store(1, 7)
+	s.Store(1, 8, 9, 10)
+	v, ok := s.Load(1)
+	if !ok {
+		t.Fatal("should exist")
+		return
+	}
+	t.Log(v)
+	s.Store(2, 1, 2, 3)
+	s.Store(2, 4)
+	s.Store(2, 5, 6)
+	s.Store(2, 7)
+	s.Store(2, 8, 9, 10)
+	v, ok = s.Load(2)
+	if !ok {
+		t.Fatal("should exist")
+		return
+	}
+	t.Log(v)
+}
